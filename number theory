@@ -1,10 +1,10 @@
 //sieve of eratosthenes
-vector<bool> p(10000001,true);
+vector<bool> p(n,true);
 void sieve(){
     p[0]= false;p[1]= false;
-    for(int i = 2;i*i <= 10000000;i++){
+    for(int i = 2;i*i <= n;i++){
         if(p[i]==true){
-            for(int j = i*i;j<=10000000;j+=i){
+            for(int j = i*i;j<= n;j+=i){
                 p[j]=false;
             }
         }
