@@ -1,0 +1,35 @@
+// VERY BASIC SEG TREE FOR POINT UPDATE
+void build(vector<ll> &p,vector<ll> &seg,ll l, ll r,ll node){
+	if(l==r){
+		seg[node] = p[l];
+		return;
+	}
+	ll m = (l+r)/2;
+	build(p,seg,l,m,2*node+1);
+	build(p,seg,m+1,r,2*node+2);
+	seg[node] = seg[2*node+1]+seg[2*node+2];
+	return;
+}
+void update(vector<ll> &p,vector<ll> &seg,ll l,ll r,ll node,ll pos,ll val){
+	if(l == r){
+		seg[node] = p[pos] = val;
+		return;
+	}
+	ll m = (l+r)/2;
+	if(pos<=m){
+		update(p,seg,l,m,2*node+1,pos,val);
+	}else{
+		update(p,seg,m+1,r,2*node+2,pos,val);
+	}
+	seg[node] = seg[node*2+1]+seg[node*2+2];
+}
+ll query(vector<ll> &p,vector<ll> &seg,ll l,ll r,ll node,ll q1,ll q2){
+	if(q1> r || q2< l){
+		return 0;
+	}
+	if(q1>= l && q2<=r){
+		return seg[node];
+	}
+	ll m = (l+r)/2;
+	return query(p,seg,l,m,2*node+1,q1,q2)+query(p,seg,m+1,r,2*node+1,q1,q2);
+}
