@@ -1,35 +1,59 @@
-// VERY BASIC SEG TREE FOR POINT UPDATE
-void build(vector<ll> &p,vector<ll> &seg,ll l, ll r,ll node){
-	if(l==r){
-		seg[node] = p[l];
-		return;
-	}
-	ll m = (l+r)/2;
-	build(p,seg,l,m,2*node+1);
-	build(p,seg,m+1,r,2*node+2);
-	seg[node] = seg[2*node+1]+seg[2*node+2];
-	return;
+// SEG TREE WITH LAZY FOR SUM OF RANGE AND ASSIGNING VALUE TO RANGE
+vector<ll> p(1e5);
+vector<ll> seg(4e5);
+vector<ll> lazy(4e5);
+void build(ll ind,ll l,ll r){
+    if(l == r){
+        seg[ind] = p[l];
+        return;
+    }
+    ll m = (l+r)/2;
+    build(2*ind+1,l,m);
+    build(2*ind+2,m+1,r);
+    seg[ind] = seg[2*ind+1]+seg[2*ind+2];
+    return;
 }
-void update(vector<ll> &p,vector<ll> &seg,ll l,ll r,ll node,ll pos,ll val){
-	if(l == r){
-		seg[node] = p[pos] = val;
-		return;
-	}
-	ll m = (l+r)/2;
-	if(pos<=m){
-		update(p,seg,l,m,2*node+1,pos,val);
-	}else{
-		update(p,seg,m+1,r,2*node+2,pos,val);
-	}
-	seg[node] = seg[node*2+1]+seg[node*2+2];
+void update(ll ind,ll l,ll r,ll low,ll high,ll val){
+    if(lazy[ind]!=0){
+        seg[ind] = (r-l+1)*lazy[ind];
+        if(l!=r){
+            lazy[2*ind+1] = lazy[ind];
+            lazy[2*ind+2] = lazy[ind];
+        }
+        lazy[ind] = 0;
+    }
+    if(l>= low && r<= high){
+        seg[ind] = (r-l+1)*val;
+        if(l!=r){
+            lazy[2*ind+1] = val;
+            lazy[2*ind+2] = val;
+        }
+        return;
+    }
+    if(r<low||l>high||l>r){
+        return ;
+    }
+    ll m = (l+r)/2;
+    update(2*ind+1,l,m,low,high,val);
+    update(2*ind+2,m+1,r,low,high,val);
+    seg[ind] = seg[2*ind+1]+seg[2*ind+2];
+    return;
 }
-ll query(vector<ll> &p,vector<ll> &seg,ll l,ll r,ll node,ll q1,ll q2){
-	if(q1> r || q2< l){
-		return 0;
-	}
-	if(q1>= l && q2<=r){
-		return seg[node];
-	}
-	ll m = (l+r)/2;
-	return query(p,seg,l,m,2*node+1,q1,q2)+query(p,seg,m+1,r,2*node+1,q1,q2);
+ll query(ll ind,ll l,ll r,ll low,ll high){
+    if(lazy[ind]!=0){
+        seg[ind] = (r-l+1)*lazy[ind];
+        if(l!=r){
+            lazy[2*ind+1] = lazy[ind];
+            lazy[2*ind+2] = lazy[ind];
+        }
+        lazy[ind] = 0;
+    }
+    if(l>= low && r<= high){
+        return seg[ind];
+    }
+    if(r<low||l>high||l>r){
+        return 0;
+    }
+    ll m = (l+r)/2;
+    return query(2*ind+1,l,m,low,high)+query(2*ind+2,m+1,r,low,high);
 }
