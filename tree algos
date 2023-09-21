@@ -1,0 +1,43 @@
+//Diameter using height.
+void dfs(vector<vector<ll>> &adj,vector<ll> &h,ll cur,ll par,vector<ll> &dia){
+    if(adj[cur].size()==1 && par!=-1){
+        h[cur] = 0;
+        dia[cur] = 0;
+    }
+    ll maxm1 = -1,maxm = -1;
+    for(auto i :adj[cur]){
+        if(i != par){
+            dfs(adj,h,i,cur,dia);
+            if(h[i]>=maxm){
+                maxm1 = maxm;
+                maxm = h[i];
+            }else if(h[i] > maxm1){
+                maxm1 = h[i];
+            }
+        }
+    }
+    h[cur] = 1+maxm;
+    if(maxm1 == -1){
+        dia[cur] = h[cur];
+    }
+    dia[cur] = maxm+maxm1+2;
+}
+// Optimal approach
+void dfs(vector<vector<ll>> &adj,ll cur,ll par,ll dis,ll &mdis,ll &fnode){
+    if(dis > mdis){
+        mdis = dis;
+        fnode = cur;
+    }
+    for(auto i : adj[cur]){
+        if(i != par){
+            dfs(adj,i,cur,dis+1,mdis,fnode);
+        }
+    }
+}
+ll dia(vector<vector<ll>> &adj){
+    ll fnode1 = 0,fnode2 = 0,mdis = 0;
+    dfs(adj,1,-1,0,mdis,fnode1);
+    mdis = 0;
+    dfs(adj,fnode1,-1,0,mdis,fnode2);
+    return mdis;
+}
