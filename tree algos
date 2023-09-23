@@ -84,3 +84,81 @@ int main(){
         cout << ans << nline;
     }
 }
+// LCA
+#include <bits/stdc++.h>
+using namespace std;
+#define ll long long
+#define nline "\n"
+#define ff first
+#define ss second
+#define pb push_back
+int MOD = 1e9+7;
+void dfs_it_ot(vector<vector<ll>>&adj,vector<ll> &intime,vector<ll> &outtime,ll &gtime,ll cur,ll par){
+    gtime++;
+    intime[cur] = gtime;
+    for(auto i : adj[cur]){
+        if(i != par){
+            dfs_it_ot(adj,intime,outtime,gtime,i,cur);
+        }
+    }
+    gtime++;
+    outtime[cur] = gtime;
+}
+void dfs(vector<vector<ll>> &adj,vector<vector<ll>> &parents,ll cur,ll par){
+    parents[cur][0] = par;
+    for(auto child : adj[cur]){
+        if(child!=par)
+        dfs(adj,parents,child,cur);
+    }
+}
+bool isancestor(ll x,ll y,vector<ll> &intime,vector<ll> &outtime){
+     return (intime[x] <= intime[y]) && (outtime[x] >= outtime[y]);
+}
+ll lca(vector<vector<ll>> &parents,ll x,ll y,vector<ll> &intime,vector<ll> &outtime){
+    if(x == y){
+        return x;
+    }
+    if(isancestor(x,y,intime,outtime)){
+        return x;
+    }
+    if(isancestor(y,x,intime,outtime)){
+        return y;
+    }
+    int maxm = parents[0].size();
+    for(int i = maxm-1;i >= 0;i--){
+        ll parentofx = parents[x][i];
+        if(parentofx!=-1 && !isancestor(parentofx,y,intime,outtime)){
+            x = parentofx;
+        }
+    }
+    return parents[x][0];
+}
+int main(){
+    ios::sync_with_stdio(0);
+    cin.tie(0);
+    ll n,q;cin >> n >> q;
+    vector<vector<ll>> adj(n+1);
+    for(int i = 2;i <= n;i++){
+        ll x;cin >> x;
+        adj[x].pb(i);
+    }
+    int maxm = log2(n)+1;
+    vector<vector<ll>> parents(n+1,vector<ll>(maxm+1));
+    dfs(adj,parents,1,-1);
+    for(int i = 1;i <= maxm;i++){
+        for(int j = 1;j <= n;j++){
+            if(parents[j][i-1]==-1){
+                parents[j][i] = -1;
+            }else{
+                parents[j][i] = parents[parents[j][i-1]][i-1];
+            }
+        }
+    }
+    vector<ll> intime(n+1),outtime(n+1);
+    ll gtime = 0;
+    dfs_it_ot(adj,intime,outtime,gtime,1,-1);
+    while(q--){
+        ll a,b;cin >> a >> b;
+        cout << lca(parents,a,b,intime,outtime) << nline;
+    }
+}
