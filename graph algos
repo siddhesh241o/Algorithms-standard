@@ -1,0 +1,23 @@
+//dijkstra
+void dijkstra(vector<vector<pair<ll, ll>>> &adj,vector<ll> &dis,ll start,vector<ll> &par){
+    dis[start] = 0;
+    priority_queue<pair<ll,ll>,vector<pair<ll, ll>>,greater<pair<ll,ll>>> pq;
+    pq.push({0,start});
+    while(pq.size()>0){
+        pair<ll,ll> p;
+        p = pq.top();
+        pq.pop();
+        ll cur = p.ss;
+        ll cdis = p.ff;
+        if(cdis != dis[cur]){
+            continue;
+        }
+        for(auto i : adj[cur]){
+            if(dis[i.ff]>dis[cur]+i.ss){
+                pq.push({dis[cur]+i.ss,i.ff});
+                dis[i.ff] = dis[cur] + i.ss;
+                par[i.ff] = cur;
+            }
+        }
+    }
+}
