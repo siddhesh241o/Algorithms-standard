@@ -1,0 +1,15 @@
+int maxi(vector<vector<int>> &sp,int x,int y){
+    int maxm = 31 - __builtin_clz((y-x+1));
+    return max(sp[x][maxm],sp[y-(1<<maxm)+1][maxm]);
+}
+int maxm = 31-__builtin_clz(n);
+vector<vector<int>> sp(n,vector<int>(maxm+1));
+for(int i = 0;i < n;i++){
+    sp[i][0] = b[i];
+}
+for(int j = 1;j <= maxm;j++){
+    for(int i = 0;i < n;i++){
+            if(i+(1<<(j-1)) < n)
+                sp1[i][j] = max(sp1[i][j-1],sp1[i+(1<<(j-1))][j-1]);
+    }
+}
