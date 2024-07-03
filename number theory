@@ -43,6 +43,7 @@ ll binpow(ll base,ll pow){
 }
 ll combi(ll n,ll r){
     if(n - r < 0) return 0;
+    if(r == 0) return 1;
     return (fact[n]*binpow((fact[n-r]*fact[r])%mod,mod-2))%mod;
 }
 fact[0] = 1;
