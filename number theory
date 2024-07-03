@@ -27,3 +27,25 @@ void factorisation(int n,vector<ll> &spf){
         }
     }
 }
+//combinatorics and factorials
+int mod = 1e9+7;
+int N = 1e5;
+vector<ll> fact(N+1);
+ll binpow(ll base,ll pow){
+    ll ans = 1;
+    base %= mod;
+    while(pow > 0){
+        if(pow%2) (ans *= base)%= mod;
+        pow /= 2;
+        (base *= base)%= mod;
+    }
+    return ans;
+}
+ll combi(ll n,ll r){
+    if(n - r < 0) return 0;
+    return (fact[n]*binpow((fact[n-r]*fact[r])%mod,mod-2))%mod;
+}
+fact[0] = 1;
+for(ll i = 1;i <= N;i++){
+    fact[i] = (fact[i-1]*i)%mod;
+}
