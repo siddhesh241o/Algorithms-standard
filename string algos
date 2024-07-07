@@ -1,0 +1,44 @@
+//trie
+class node{
+    public :
+    int cnt;
+    vector<node*> next;
+    node(){
+        cnt = 0;
+        next.resize(26);
+        for(int i = 0;i < 26;i++){
+            next[i] = NULL;
+        }
+    }
+};
+class trie{
+    public :
+    node *root;
+    void insert(vector<string> &p){
+        root = new node;
+        int n = p.size();
+        for(int i = 0;i < n;i++){
+            node *cur = root;
+            for(auto j : p[i]){
+                ll ind = j-'a';
+                if(cur->next[ind]==NULL){
+                    cur->next[ind] = new node;
+                }
+                cur = cur->next[ind];
+                cur->cnt++;
+            }
+        }
+    }
+    ll query(string &s){
+        node *cur = root;
+        ll pref = 0;
+        for(auto i : s){
+            if(cur->next[i-'a']==NULL){
+                break;
+            }
+            cur = cur->next[i-'a'];
+            pref += cur->cnt;
+        }
+        return pref;
+    }
+};
