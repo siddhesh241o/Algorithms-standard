@@ -31,6 +31,7 @@ void factorisation(int n,vector<ll> &spf){
 int mod = 1e9+7;
 int N = 1e5;
 vector<ll> fact(N+1);
+vector<ll> inv(N+1);
 ll binpow(ll base,ll pow){
     ll ans = 1;
     base %= mod;
@@ -42,11 +43,15 @@ ll binpow(ll base,ll pow){
     return ans;
 }
 ll combi(ll n,ll r){
-    if(n - r < 0) return 0;
-    if(r == 0) return 1;
-    return (fact[n]*binpow((fact[n-r]*fact[r])%mod,mod-2))%mod;
+    if(n == r || r == 0) return 1;
+    if(n - r < 0 || r < 0) return 0;
+    return 1ll*fact[n]*inv[r]%mod*inv[n-r]%mod;
 }
 fact[0] = 1;
 for(ll i = 1;i <= N;i++){
     fact[i] = (fact[i-1]*i)%mod;
+}
+inv[N] = binpow(fact[N],mod-2);
+for(ll i = N-1;i >= 1;i--){
+    inv[i] = 1ll*inv[i+1]*(i+1)%mod;
 }
