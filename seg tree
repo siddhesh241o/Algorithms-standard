@@ -54,3 +54,54 @@ ll query(ll ind,ll l,ll r,ll low,ll high,vector<ll> &p,vector<ll> &seg,vector<ll
     ll m = (l+r)/2;
     return query(2*ind+1,l,m,low,high,p,seg,lazy)+query(2*ind+2,m+1,r,low,high,p,seg,lazy);
 }
+// seg tree with point updates
+class segtree{
+    public : 
+    class node{
+        public : 
+        void init(){
+
+        }
+    };
+    vector<node> seg;
+    int n;
+    node unite(node a, node b){
+        
+    }
+    void build(ll ind,ll l,ll r,vector<ll> &b){
+        if(l == r){
+            seg[ind].init();
+            return;
+        }
+        ll m = (l + r)/2;
+        build(2*ind+1,l,m,b);
+        build(2*ind+2,m+1,r,b);
+        seg[ind] = unite(seg[2*ind+1], seg[2*ind+2]);
+    }
+    void update(ll ind,ll l,ll r,ll x,ll val){
+        if(x < l || x > r || l > r) return;
+        if(l == r){
+            seg[ind].init();
+            return;
+        }
+        ll m = (l+r)/2;
+        update(2*ind+1,l,m,x,val);
+        update(2*ind+2,m+1,r,x,val);
+        seg[ind] = unite(seg[2*ind+1], seg[2*ind+2]);
+    }
+    node query(ll ind,ll l,ll r,ll ql,ll qr){
+        if (ql > r || qr < l) {
+            
+        }
+        if(l >= ql && qr <= r){
+            return seg[ind];
+        }
+        ll m = (l + r)/2;
+        return unite(query(2*ind+1,l,m,ql,qr),query(2*ind+2,m+1,r,ql,qr));
+    }
+    segtree(ll N,vector<ll> &b){
+        n = N;
+        seg.resize(4*n);
+        build(0,0,n-1,b);
+    }
+};
