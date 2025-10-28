@@ -93,7 +93,7 @@ class segtree{
         if (ql > r || qr < l) {
             
         }
-        if(l >= ql && qr <= r){
+        if(l >= ql && r <= qr){
             return seg[ind];
         }
         ll m = (l + r)/2;
@@ -103,5 +103,36 @@ class segtree{
         n = N;
         seg.resize(4*n);
         build(0,0,n-1,b);
+    }
+};
+class FenwickTree{
+    public:
+    ll n; 
+    vector<ll> tree;
+    FenwickTree(ll N){
+        n = N;
+        tree.resize(n+1);
+    }
+    void update(ll idx, ll del){
+        idx++;
+        while(idx <= n){
+            tree[idx] += del;
+            idx += idx&-idx;
+        }
+    }
+    ll query(ll idx){
+        idx++;
+        ll ans = 0;
+        while(idx > 0){
+            ans += tree[idx];
+            idx -= idx&-idx;
+        }
+        return ans;
+    }
+    ll rangeQuery(ll a, ll b){
+        if(a == 0){
+            return query(b);
+        }
+        return query(b)-query(a-1);
     }
 };
