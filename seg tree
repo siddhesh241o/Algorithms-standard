@@ -129,7 +129,7 @@ class lazySegtree{
         seg[ind].lazy += seg[par].lazy;
     }
     
-    segtree(ll N, vector<ll> &b){
+    lazySegtree(ll N, vector<ll> &b){
         n = N;
         seg.resize(4*n);
         build(0, 0, n-1, b);
